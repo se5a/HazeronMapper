@@ -360,6 +360,12 @@ namespace HazeronMapper
         {
             get { return WHPolarity; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="thissystem"></param>
+        /// <returns>the sytem that 'thissystem' links to</returns>
         public SystemObj getlink(SystemObj thissystem)
         {
             SystemObj linkedsys; 
@@ -367,9 +373,13 @@ namespace HazeronMapper
             {
                 linkedsys = SystemsLinked[1];
             }
-            else
+            else if (this.SystemsLinked[1] == thissystem)
             {
                 linkedsys = SystemsLinked[0];
+            }
+            else
+            {
+                throw new System.ArgumentException("System does not exsist in this link");
             }
             return linkedsys;
         }

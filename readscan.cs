@@ -108,7 +108,7 @@ namespace HazeronMapper
                             sectorscount++;
                             SystemObj whlinksys = new SystemObj(linktosystemLoc, linkstosystemName, galaxy.sectors_dictionary[linktosectorLoc]);
                             systemscount++;
-                            wh.makelink(whlinksys);
+                            wh.makelink(galaxy.sectors_dictionary[linktosectorLoc].systems_dictionary[whlinksys.location]);
                             whlinecount = 0;
                             whcount++;
                         }

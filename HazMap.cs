@@ -23,10 +23,14 @@ namespace HazeronMapper
 
         Dictionary<string, SystemObj> mappedsystems = new Dictionary<string, SystemObj>();
         List<WormHoleObj> mappedwormholes = new List<WormHoleObj>();
+        List<SystemObj> systemPlaced = new List<SystemObj>();
         List<UserControl_System> sys_usrCtrls = new List<UserControl_System>();
         Point zeropt;
 
         UserControl_System syslink_usrctrl;
+
+        bool leftmousegrab = false;
+        Point dragOffset;
 
         public HazMap()
         {
@@ -48,10 +52,11 @@ namespace HazeronMapper
             
         }
 
-        //public SystemObj startSystem
-        //{
-        //    set { this.startSys = value; }
-        //}
+        public void canvasupdate()
+        {
+            canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt); 
+        }
+
         public Galaxy thegalaxy
         {
             get { return this.galaxy; }
@@ -79,7 +84,8 @@ namespace HazeronMapper
         {           
             
             Point startmappoint = new Point(0,200);
-           
+            canvasupdate();
+
             if (galaxy.sectors_dictionary.Count > 0)
             {
                 selectSystemPrompt promptwindow = new selectSystemPrompt();
@@ -95,11 +101,18 @@ namespace HazeronMapper
                     control.Dispose();
                 }
 
+                if (!resetlocs)
+                {
+                    startmappoint = startSys.maploc;
+                }
                 
                 sys_usrCtrls = new List<UserControl_System>();  //new usercontrol list
                 mappedsystems = new Dictionary<string, SystemObj>(); //new mappedsystems dictionary
+                mappedwormholes = new List<WormHoleObj>();
+                systemPlaced = new List<SystemObj>();
 
-                startSys.maploc = startmappoint; //set first system location 
+                startSys.maploc = startmappoint; //set first system location
+                systemPlaced.Add(startSys);
                 syslink_usrctrl = new UserControl_System(startSys, this, canvasdata); //first system usercontrol
                 sys_usrCtrls.Add(syslink_usrctrl); //addthe user control to the usercontrol list
                  
@@ -125,21 +138,21 @@ namespace HazeronMapper
             }
         }
 
-        private void placesystems(SystemObj system, int angle, int depth, bool resetlocs)
-        {
-                       
+        private void placesystems(SystemObj parentsystem, int angle, int depth, bool resetlocs)
+        {                       
             if (depth > 0)
             {
                 //Dictionary<string, SystemObj> systemslinked = new Dictionary<string, SystemObj>();
                 List<SystemObj> systemslinked = new List<SystemObj>();
                 int icondistance = 100;
-
-                Point sysiconloc = system.maploc;//new Point(0, 0);
+                Point parentMaploc = parentsystem.maploc;//new Point(0, 0);
                 bool resetthisloc = false;
 
-                foreach (WormHoleObj wh in system.Wormholes) //foreach wormhole from this system.
+                foreach (WormHoleObj wh in parentsystem.Wormholes) //foreach wormhole from this system.
                 {
-                    SystemObj linkedsys = wh.getlink(system);
+                    
+                    SystemObj linkedsys = wh.getlink(parentsystem);
+                    
                     //if (!systemslinked.Keys.Contains(linkedsys.location))
                     if (!systemslinked.Contains(linkedsys))
                     {
@@ -158,31 +171,37 @@ namespace HazeronMapper
                         sys_usrCtrls.Add(syslink_usrctrl);
                         mappedsystems.Add(linkedsys.location, linkedsys);
                         pictureBox1.Controls.Add(syslink_usrctrl);                       
-                    }
-
-                    
-                    
+                    }                             
                 }
                 //foreach (KeyValuePair<string, SystemObj> kvp_system in systemslinked)
-                foreach (SystemObj linkedsys in systemslinked)
+                foreach (SystemObj linkedsys in systemslinked) //this list should not include the parent...
                 {
-                    //SystemObj linkedsys = kvp_system.Value;
-
-                    Point dloc = mappedsystems[linkedsys.location].maploc;
-                    //if (dloc.X < 1 || dloc.Y < 1) { resetthisloc = true; }
-                    int linkcount = systemslinked.Count;
-                    //if (linkcount > 1) { linkcount -= 1; }
-                    if (resetthisloc || resetlocs) //reset.
+                    if (!systemPlaced.Contains(linkedsys))
                     {
-                        angle += (360 / linkcount);
-                        sysiconloc = sides_ab(icondistance, angle, false);
-                        sysiconloc.X += system.maploc.X;
-                        sysiconloc.Y += system.maploc.Y;
+                        //SystemObj linkedsys = kvp_system.Value;
+                        Point thismaploc = new Point();
+                        thismaploc = parentsystem.maploc;
+                        //Point dloc = mappedsystems[linkedsys.location].maploc;
+                        //if (dloc.X < 1 || dloc.Y < 1) { resetthisloc = true; }
+                        int linkcount = systemslinked.Count;
+                        //if (linkcount > 1) { linkcount -= 1; }
+                        if (resetthisloc || resetlocs) //reset.
+                        {
 
+                            angle += (360 / linkcount);
+                            thismaploc = sides_ab(icondistance, angle, false);
+                            thismaploc.X += parentsystem.maploc.X;
+                            thismaploc.Y += parentsystem.maploc.Y;
 
+                            //
+
+                        }
+                        //mappedsystems[linkedsys.location].maploc = thismaploc;
+                        linkedsys.maploc = thismaploc;
+                        systemPlaced.Add(linkedsys);
                     }
-                    mappedsystems[linkedsys.location].maploc = sysiconloc;
-                    placesystems(mappedsystems[linkedsys.location], angle, depth - 1, resetlocs);
+                    //placesystems(mappedsystems[linkedsys.location], angle, depth - 1, resetlocs);
+                    placesystems(linkedsys, angle, depth - 1, resetlocs);
  
                 }
             }
@@ -273,7 +292,46 @@ namespace HazeronMapper
         {
             string hazscan = Clipboard.GetText();
             Readscan.readscan(hazscan, galaxy);
+        }
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                leftmousegrab = true;
+                //dragOffset = this.PointToScreen(e.Location);
+                dragOffset = e.Location;
+                //var formLocation = this.Location;
+                //dragOffset.X -= formLocation.X;
+                //dragOffset.Y -= formLocation.Y;
+            }
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            leftmousegrab = false;
+            canvasupdate();
+            refreshlines();
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (leftmousegrab)
+            {
+                //Point newloc = this.PointToScreen(e.Location);
+                Point newloc = e.Location;
+                
+                newloc = canvasdata.sub(newloc, dragOffset);
+
+                zeropt.X -= newloc.X;
+                zeropt.Y += newloc.Y;
+                canvasupdate();
+                refreshlines();
+
+            }
         } 
+
+
     }
 
     public class selectsys_returnObj
