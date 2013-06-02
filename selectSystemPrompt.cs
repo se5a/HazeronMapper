@@ -27,7 +27,7 @@ namespace HazeronMapper
 
             dataGridView_systems.Columns["name"].DisplayIndex = 0;
             dataGridView_systems.Columns["location"].DisplayIndex = 1;
-            dataGridView_systems.Columns["drawloc"].Visible = false;
+            dataGridView_systems.Columns["maploc"].Visible = false;
             dataGridView_systems.Refresh();
             this.ShowDialog();
 

@@ -51,6 +51,7 @@
     <Compile Include="HazMap.Designer.cs">
       <DependentUpon>HazMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="maploctans.cs" />
     <Compile Include="MapObj.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

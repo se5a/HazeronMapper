@@ -184,13 +184,15 @@ namespace HazeronMapper
         List<int> sysLoc = new List<int>();
         string sysLocS;
         SectorObj parentSector;
+        //UserControl_System systemicon;
         
         List<WormHoleObj> Wormholes_list = new List<WormHoleObj>();
         List<SystemBodyObj> systemBodys_list = new List<SystemBodyObj>();
 
         string sysNotes;
 
-        System.Drawing.Point drawLoc;
+        System.Drawing.Point sysMapLoc;
+
 
         public SystemObj(string sysloc, string systemname, SectorObj sector)
         {         
@@ -225,6 +227,11 @@ namespace HazeronMapper
         {
             get { return this.sysLocS; }
         }
+        //public UserControl_System usrctrl
+        //{
+        //    get { return this.systemicon; }
+        //    set { this.systemicon = value; }
+        //}
         //public List<int> loc
         //{
         //    get { return this.sysLoc; }
@@ -240,11 +247,15 @@ namespace HazeronMapper
         {
             get { return this.Wormholes_list; }
         }
-        public System.Drawing.Point drawloc
+
+
+
+        public System.Drawing.Point maploc
         {
-            get { return this.drawLoc; }
-            set { this.drawLoc = value; }
+            get { return this.sysMapLoc; }
+            set { this.sysMapLoc = value; }
         }
+
     }
 
     [Serializable]

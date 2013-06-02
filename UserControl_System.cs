@@ -18,16 +18,22 @@ namespace HazeronMapper
         bool showname = true;
         HazMap parenthazmapform;
         bool showNotes = false;
+        Canvasdata canvasdata;
+        Point offset = new Point(10, 10);
+        //Point warplinesloc;
+        bool leftmousegrab = false;
 
-
-
-        public UserControl_System(SystemObj system, HazMap parenthazmapform)
+        public UserControl_System(SystemObj system, HazMap parenthazmapform, Canvasdata canvasdata)
         {
             InitializeComponent();
             this.system = system;
-            this.Location = system.drawloc;
+            //updateloc(canvasdata);
             this.parenthazmapform = parenthazmapform;
             this.textBox_sysnotes.Text = system.notes;
+            this.canvasdata = canvasdata;
+            //system.usrctrl = this;
+            //this.Location = canvasdata.sub(canvasdata.canvasLocation(system.maploc), offset);
+            location();
             label_SysName.Text = system.name;
             if (showname)
             {
@@ -40,25 +46,42 @@ namespace HazeronMapper
 
         }
 
+        private void location()
+        {
+            this.Location = canvasdata.sub(canvasdata.canvasLocation(system.maploc), offset);
+        }
+        public void location(Canvasdata canvasdata)
+        {
+            this.canvasdata = canvasdata;
+            location();
+        }
+      
         private void shownotes()
         {
             if (this.showNotes)
             {
                 textBox_sysnotes.Visible = false;
-                //this.Size.Height = textBox_sysnotes.Size.Height + 10;
-                //Size.Height = 10;
                 this.showNotes = false;
             }
             else
             {
                 textBox_sysnotes.Visible = true;
                 this.showNotes = true;
-                //this.Size.Height = 40;
                 this.Size = new Size(this.Size.Width, this.textBox_sysnotes.Height + this.label_SysName.Height);
             }
         }
 
- 
+        //public Point warplineloc
+        //{
+        //    get { return this.warplinesloc; }
+        //}
+
+        //public void updateloc(Canvasdata canvasdata)
+        //{
+        //    this.Location = canvasdata.canvasLocation(system.maploc);
+        //    this.warplinesloc = canvasdata.add(this.Location, warplinesoffset);
+        //}
+
 
         private void UserControl_System_DoubleClick(object sender, EventArgs e)
         {
@@ -69,7 +92,9 @@ namespace HazeronMapper
         {
             if (e.Button == MouseButtons.Left)
             {
+                leftmousegrab = true;
                 dragOffset = this.PointToScreen(e.Location);
+                //dragOffset = e.Location;
                 var formLocation = this.Location;
                 dragOffset.X -= formLocation.X;
                 dragOffset.Y -= formLocation.Y;
@@ -79,22 +104,32 @@ namespace HazeronMapper
 
         private void UserControl_System_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                Point newLocation = this.PointToScreen(e.Location);
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    Point newLocation = this.PointToScreen(e.Location);
 
-                newLocation.X -= dragOffset.X;
-                newLocation.Y -= dragOffset.Y;
+            //    newLocation.X -= dragOffset.X;
+            //    newLocation.Y -= dragOffset.Y;
 
-                this.Location = newLocation;
-                this.system.drawloc = newLocation;
-                parenthazmapform.refreshlines();
+
+            //    this.system.maploc = canvasdata.sub(newLocation, dragOffset);
+            //    this.Location = newLocation;
+            //    parenthazmapform.refreshlines();
                 
+            //}
+            if (leftmousegrab)
+            {
+                Point newloc = this.PointToScreen(e.Location);
+                newloc = canvasdata.sub(newloc, dragOffset);
+                //this.Location = newloc;
+                this.system.maploc = canvasdata.reversecanvasLocation(newloc);
+                location();
             }
         }
 
         private void UserControl_System_MouseUp(object sender, MouseEventArgs e)
         {
+            leftmousegrab = false;
             parenthazmapform.refreshlines();
         }
 
