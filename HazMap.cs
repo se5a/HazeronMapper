@@ -36,54 +36,31 @@ namespace HazeronMapper
         {
             InitializeComponent();
             zeropt = new Point((pictureBox1.Width / 2) * -1, pictureBox1.Height / 2);
-            canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt);
-
-            Dictionary<string, testobj1> testdic = new Dictionary<string, testobj1>();
-
-            testobj1 to1 = new testobj1("test1");
-            testdic.Add("test1", to1);
-
-            testobj2 to2 = new testobj2("testb", to1);
-            //testdic.Add("testb", to2);
-
-            to1.changeid2("test2");
-            to1.changeid3 = "test3";
-
-            
+            canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt);            
         }
 
         public void canvasupdate()
         {
             canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt); 
         }
-
+        public void refreshlines()
+        {
+            //pictureBox1.Invalidate();
+            if (mappedsystems.Count > 0)
+            {
+                pictureBox1.Paint += new PaintEventHandler(this.drawlines);
+                pictureBox1.Invalidate();
+            }
+        }
         public Galaxy thegalaxy
         {
             get { return this.galaxy; }
         }
 
-        private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            DialogResult ofd_result = ofd.ShowDialog();
-            if (ofd_result == DialogResult.OK)
-            {
-                string scanfile = ofd.FileName;
-                try
-                {
-                    string scantext = File.ReadAllText(scanfile);
-                    Readscan.readscan(scantext, galaxy);
-                }
-                catch (IOException)
-                {
-                }
-            }
-        }
-
         private void toolStripButton_drawmap_Click(object sender, EventArgs e)
         {           
             
-            Point startmappoint = new Point(0,200);
+            //Point startmappoint = new Point(0,200);
             canvasupdate();
 
             if (galaxy.sectors_dictionary.Count > 0)
@@ -101,9 +78,9 @@ namespace HazeronMapper
                     control.Dispose();
                 }
 
-                if (!resetlocs)
+                if (resetlocs)
                 {
-                    startmappoint = startSys.maploc;
+                    startSys.maploc = new Point(0,200);
                 }
                 
                 sys_usrCtrls = new List<UserControl_System>();  //new usercontrol list
@@ -111,7 +88,7 @@ namespace HazeronMapper
                 mappedwormholes = new List<WormHoleObj>();
                 systemPlaced = new List<SystemObj>();
 
-                startSys.maploc = startmappoint; //set first system location
+                //startSys.maploc = startmappoint; //set first system location
                 systemPlaced.Add(startSys);
                 syslink_usrctrl = new UserControl_System(startSys, this, canvasdata); //first system usercontrol
                 sys_usrCtrls.Add(syslink_usrctrl); //addthe user control to the usercontrol list
@@ -127,16 +104,6 @@ namespace HazeronMapper
             refreshlines();        
         }
 
-
-        public void refreshlines()
-        {
-            //pictureBox1.Invalidate();
-            if (mappedsystems.Count > 0)
-            {
-                pictureBox1.Paint += new PaintEventHandler(this.drawlines);
-                pictureBox1.Invalidate();
-            }
-        }
 
         private void placesystems(SystemObj parentsystem, int angle, int depth, bool resetlocs)
         {                       
@@ -280,18 +247,66 @@ namespace HazeronMapper
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            filehandling.SerializeObject(galaxy, "galaxy.hzm");
+            string filename = savefilediag(".hzm");           
+            filehandling.SerializeObject(galaxy, filename);
         }
+
+        private string savefilediag(string extension)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.AddExtension = true;
+            sfd.DefaultExt = extension;
+            string filename = null;
+            DialogResult ofd_result = sfd.ShowDialog();
+            if (ofd_result == DialogResult.OK)
+            {
+                filename = sfd.FileName;
+            }
+            return filename;
+        }
+
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            galaxy = (Galaxy)filehandling.DeserializeObject("galaxy.hzm");
+            string filename = openfilediag(".hzm");
+            if (filename != null)
+            {
+                galaxy = (Galaxy)filehandling.DeserializeObject(filename);
+            }
         }
 
         private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string hazscan = Clipboard.GetText();
             Readscan.readscan(hazscan, galaxy);
+        }
+
+        private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string filename = openfilediag(".txt");
+            string scanfile = filename;
+            try
+            {
+                string scantext = File.ReadAllText(scanfile);
+                Readscan.readscan(scantext, galaxy);
+            }
+            catch (IOException)
+            {
+            }
+        }
+
+        private string openfilediag(string extension)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            //ofd.Filter = "*" + extension;
+            ofd.DefaultExt = extension;
+            string filename = null;
+            DialogResult ofd_result = ofd.ShowDialog();
+            if (ofd_result == DialogResult.OK)
+            {
+                filename = ofd.FileName;
+            }
+            return filename;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -327,11 +342,8 @@ namespace HazeronMapper
                 zeropt.Y += newloc.Y;
                 canvasupdate();
                 refreshlines();
-
             }
         } 
-
-
     }
 
     public class selectsys_returnObj
@@ -345,51 +357,5 @@ namespace HazeronMapper
             this.depth = depth;
             this.resetloc = resetloc;
         }
-
     }
-
-
-
-    public class testobj1
-    {
-        string id;
-        string id2;
-        string id3;
-        testobj2 to2;
-        public testobj1(string id)
-        {
-            this.id = id;
-            id2 = id;
-            id3 = id;
-        }
-
-        public void changeid2(string newidid)
-        {
-            this.id2 = newidid;
-        }
-        public string changeid3
-        {
-            set { this.id3 = value; }
-        }
-        
-        public void set2link(testobj2 tobj2)
-        {
-            this.to2 = tobj2;
-        }
-
-    }
-    public class testobj2
-    {
-        string id;
-        testobj1 tobj1;
-        testobj1 tobj2;
-        public testobj2(string id, testobj1 tobj1)
-        {
-            this.id = id;
-            this.tobj1 = tobj1;
-            tobj1.set2link(this);
-        }
-    }
-
-
 }

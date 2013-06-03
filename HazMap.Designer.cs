@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HazMap));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menuStrip_hazmap = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,21 +43,21 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menuStrip1.SuspendLayout();
+            this.menuStrip_hazmap.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // menuStrip1
+            // menuStrip_hazmap
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStrip_hazmap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(600, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip_hazmap.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip_hazmap.Name = "menuStrip_hazmap";
+            this.menuStrip_hazmap.Size = new System.Drawing.Size(600, 24);
+            this.menuStrip_hazmap.TabIndex = 0;
+            this.menuStrip_hazmap.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
@@ -178,12 +178,12 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.Controls.Add(this.menuStrip_hazmap);
+            this.MainMenuStrip = this.menuStrip_hazmap;
             this.Name = "HazMap";
             this.Text = "HazMap";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.menuStrip_hazmap.ResumeLayout(false);
+            this.menuStrip_hazmap.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -196,7 +196,7 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip_hazmap;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
