@@ -62,6 +62,7 @@ namespace HazeronMapper
             {
                 textBox_sysnotes.Visible = false;
                 this.showNotes = false;
+                this.Size = this.MinimumSize;
             }
             else
             {
