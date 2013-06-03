@@ -182,6 +182,7 @@
             this.MainMenuStrip = this.menuStrip_hazmap;
             this.Name = "HazMap";
             this.Text = "HazMap";
+            this.SizeChanged += new System.EventHandler(this.HazMap_SizeChanged);
             this.menuStrip_hazmap.ResumeLayout(false);
             this.menuStrip_hazmap.PerformLayout();
             this.toolStrip1.ResumeLayout(false);

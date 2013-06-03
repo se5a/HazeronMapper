@@ -64,7 +64,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(128, 40);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(128, 20);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // button1
@@ -108,9 +108,9 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MinimumSize = new System.Drawing.Size(128, 40);
+            this.MinimumSize = new System.Drawing.Size(128, 20);
             this.Name = "UserControl_System";
-            this.Size = new System.Drawing.Size(128, 40);
+            this.Size = new System.Drawing.Size(128, 20);
             this.DoubleClick += new System.EventHandler(this.UserControl_System_DoubleClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UserControl_System_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UserControl_System_MouseMove);

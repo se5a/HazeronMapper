@@ -25,23 +25,23 @@ namespace HazeronMapper
         List<WormHoleObj> mappedwormholes = new List<WormHoleObj>();
         List<SystemObj> systemPlaced = new List<SystemObj>();
         List<UserControl_System> sys_usrCtrls = new List<UserControl_System>();
-        Point zeropt;
+        Point canvasloc;
 
         UserControl_System syslink_usrctrl;
 
         bool leftmousegrab = false;
-        Point dragOffset;
+        Point mousedownOffset;
 
         public HazMap()
         {
             InitializeComponent();
-            zeropt = new Point((pictureBox1.Width / 2) * -1, pictureBox1.Height / 2);
-            canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt);            
+            canvasloc = new Point((pictureBox1.Width / 2) * -1, pictureBox1.Height / 2);
+            canvasdata = new Canvasdata(1, pictureBox1.Width, pictureBox1.Height, canvasloc);            
         }
 
         public void canvasupdate()
-        {
-            canvasdata = new Canvasdata(1, this.Width, this.Height, zeropt); 
+        {           
+            canvasdata = new Canvasdata(1, pictureBox1.Width, pictureBox1.Height, canvasloc); 
         }
         public void refreshlines()
         {
@@ -52,6 +52,9 @@ namespace HazeronMapper
                 pictureBox1.Invalidate();
             }
         }
+        public void refresh()
+        { pictureBox1.Invalidate(); }
+
         public Galaxy thegalaxy
         {
             get { return this.galaxy; }
@@ -314,35 +317,50 @@ namespace HazeronMapper
             if (e.Button == MouseButtons.Left)
             {
                 leftmousegrab = true;
-                //dragOffset = this.PointToScreen(e.Location);
-                dragOffset = e.Location;
-                //var formLocation = this.Location;
-                //dragOffset.X -= formLocation.X;
-                //dragOffset.Y -= formLocation.Y;
+                mousedownOffset = e.Location;
+                //this.Cursor = Cursors. fuuuuu, no good cursors for this in default. 
             }
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            leftmousegrab = false;
+        {          
             canvasupdate();
-            refreshlines();
+            pictureBox1.Invalidate();
+            leftmousegrab = false;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks>this could be cleaned up, instead of getting delta from mousedownoffset and new mousemove loc
+        /// get it from the canvaslocation itself and the mouse move loc.</remarks>
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             if (leftmousegrab)
             {
-                //Point newloc = this.PointToScreen(e.Location);
-                Point newloc = e.Location;
-                
-                newloc = canvasdata.sub(newloc, dragOffset);
-
-                zeropt.X -= newloc.X;
-                zeropt.Y += newloc.Y;
                 canvasupdate();
-                refreshlines();
+                pictureBox1.Invalidate();
+                Point mousemove = e.Location;
+                Point offset = new Point();
+                offset.X = mousedownOffset.X - mousemove.X;
+                offset.Y = mousedownOffset.Y - mousemove.Y;
+                mousedownOffset = mousemove;
+                canvasloc.X += offset.X;
+                canvasloc.Y -= offset.Y;
+
             }
+        }
+
+        private void HazMap_SizeChanged(object sender, EventArgs e)
+        {
+            int offsetx = canvasdata.width / 2 - pictureBox1.Width / 2;
+            int offsety = canvasdata.height / 2 - pictureBox1.Height / 2;
+            canvasloc.X += offsetx;
+            canvasloc.Y -= offsety;
+            canvasupdate();
+            pictureBox1.Invalidate();
         } 
     }
 
