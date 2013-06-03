@@ -26,11 +26,11 @@ load the data by clicking open in the file menu.
 TODO / bugs:
 
 redo the system icon location code to fix problem with clicking the drawmap icon a second time
-  and allow zoom and moving the map around - mostly done.
-save data dialog box - done
-open data dialog box - done
-give the drawmap icon a picture and alt text.
-write import mapdata code to allow merging of current loaded and another saved hzm file.
-do something about system icons overlapping when close.
-fix horrible redraw of lines while moving systemicons around.
+  and allow zoom and moving the map around - mostly done.  
+  save data dialog box - done  
+  open data dialog box - done  
+  give the drawmap icon a picture and alt text.  
+  write import mapdata code to allow merging of current loaded and another saved hzm file.  
+  do something about system icons overlapping when close.  
+  fix horrible redraw of lines while moving systemicons around.
   
