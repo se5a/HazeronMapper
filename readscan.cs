@@ -10,7 +10,7 @@ namespace HazeronMapper
 {
     static class Readscan
     {
-        public static void readscan(string scanfile, Galaxy galaxy)
+        public static string readscan(string scanfile, Galaxy galaxy)
         {
             string systemName = null;
             string sectorName = null;
@@ -34,6 +34,8 @@ namespace HazeronMapper
             int linecount = 0;
             int sectorscount = 0;
             int systemscount = 0;
+
+            string returnstring = null;
          
             //using (StreamReader reader = new StreamReader(scanfile))
             //{
@@ -58,7 +60,7 @@ namespace HazeronMapper
                             int index = line.IndexOf("(");
                             sectorLoc = line.Substring(index);
                         }
-                        else if (line.Contains("System") && (!line.Contains("System Survey of ")))
+                        else if (line.Contains("System") && (!line.Contains("System Survey of ")) && (line.Contains("("))) 
                         {
                                 
                             int index = line.IndexOf("(");
@@ -75,6 +77,7 @@ namespace HazeronMapper
                             sectorscount++;
                             sys = new SystemObj(systemLoc, systemName, galaxy.sectors_dictionary[sectorLoc]);
                             systemscount++;
+                            returnstring = "Added System " + systemName;
                         }
                         if (whlinecount == 1)
                         {
@@ -119,6 +122,8 @@ namespace HazeronMapper
                     }
                 }
             }
+
+            return returnstring;
             
         }
     }

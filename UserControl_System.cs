@@ -46,7 +46,6 @@ namespace HazeronMapper
             {
                 label_SysName.Enabled = false;
             }
-
         }
 
         private void setminsize()
@@ -103,12 +102,10 @@ namespace HazeronMapper
                 dragOffset.X -= formLocation.X += offset.X;
                 dragOffset.Y -= formLocation.Y += offset.X;
             }
-
         }
 
         private void UserControl_System_MouseMove(object sender, MouseEventArgs e)
         {
-
             if (leftmousegrab)
             {
                 Point newloc = this.PointToScreen(e.Location);
@@ -116,8 +113,7 @@ namespace HazeronMapper
                 this.system.maploc = canvasdata.reversecanvasLocation(newloc);
                 location();
                 //parenthazmapform.refreshlines();
-                parenthazmapform.refresh();
-               
+                parenthazmapform.refresh();             
             }
         }
 
@@ -141,7 +137,7 @@ namespace HazeronMapper
             Size size = TextRenderer.MeasureText(thestring, thefont);
             
             textBox_sysnotes.Size = size;
-            this.Size = new Size(this.Size.Width, this.textBox_sysnotes.Height + this.label_SysName.Height);            
+            this.Size = new Size(this.textBox_sysnotes.Width + 2, this.textBox_sysnotes.Height + this.label_SysName.Height);            
             system.notes = thestring;
         }
 

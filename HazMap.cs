@@ -281,7 +281,15 @@ namespace HazeronMapper
         private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string hazscan = Clipboard.GetText();
-            Readscan.readscan(hazscan, galaxy);
+            string pastemesage = Readscan.readscan(hazscan, galaxy);
+            if (pastemesage != null)
+            {
+                this.toolStripStatusLabel1.Text = pastemesage;
+            }
+            else
+            {
+                this.toolStripStatusLabel1.Text = "Paste failed";
+            }
         }
 
         private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
