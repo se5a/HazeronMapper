@@ -34,6 +34,9 @@ namespace HazeronMapper
             //system.usrctrl = this;
             //this.Location = canvasdata.sub(canvasdata.canvasLocation(system.maploc), offset);
             location();
+            
+            this.Size = this.MinimumSize;
+            setminsize();
             label_SysName.Text = system.name;
             if (showname)
             {
@@ -44,6 +47,17 @@ namespace HazeronMapper
                 label_SysName.Enabled = false;
             }
 
+        }
+
+        private void setminsize()
+        {
+            string thestring = this.label_SysName.Text;
+            Font thefont = this.label_SysName.Font;
+            
+            Size size = TextRenderer.MeasureText(thestring, thefont);
+            size.Width += this.button1.Width + 2;
+            size.Height = this.button1.Height + 3;
+            this.MinimumSize = size;
         }
 
         private void location()
@@ -62,6 +76,7 @@ namespace HazeronMapper
             {
                 textBox_sysnotes.Visible = false;
                 this.showNotes = false;
+                setminsize();
                 this.Size = this.MinimumSize;
             }
             else

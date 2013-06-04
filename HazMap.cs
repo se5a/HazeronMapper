@@ -115,7 +115,7 @@ namespace HazeronMapper
                 //Dictionary<string, SystemObj> systemslinked = new Dictionary<string, SystemObj>();
                 List<SystemObj> systemslinked = new List<SystemObj>();
                 int icondistance = 100;
-                Point parentMaploc = parentsystem.maploc;//new Point(0, 0);
+               // Point parentMaploc = parentsystem.maploc;
                 bool resetthisloc = false;
 
                 foreach (WormHoleObj wh in parentsystem.Wormholes) //foreach wormhole from this system.
@@ -150,24 +150,24 @@ namespace HazeronMapper
                     {
                         //SystemObj linkedsys = kvp_system.Value;
                         Point thismaploc = new Point();
-                        thismaploc = parentsystem.maploc;
+                        
                         //Point dloc = mappedsystems[linkedsys.location].maploc;
                         //if (dloc.X < 1 || dloc.Y < 1) { resetthisloc = true; }
                         int linkcount = systemslinked.Count;
                         //if (linkcount > 1) { linkcount -= 1; }
                         if (resetthisloc || resetlocs) //reset.
                         {
-
+                            thismaploc = parentsystem.maploc;
                             angle += (360 / linkcount);
                             thismaploc = sides_ab(icondistance, angle, false);
                             thismaploc.X += parentsystem.maploc.X;
                             thismaploc.Y += parentsystem.maploc.Y;
-
+                            linkedsys.maploc = thismaploc;
                             //
 
                         }
                         //mappedsystems[linkedsys.location].maploc = thismaploc;
-                        linkedsys.maploc = thismaploc;
+                        
                         systemPlaced.Add(linkedsys);
                     }
                     //placesystems(mappedsystems[linkedsys.location], angle, depth - 1, resetlocs);
