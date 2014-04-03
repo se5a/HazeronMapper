@@ -250,8 +250,11 @@ namespace HazeronMapper
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string filename = savefilediag(".hzm");           
-            filehandling.SerializeObject(galaxy, filename);
+            string filename = savefilediag(".hzm");
+            if (filename != null)
+            {
+                filehandling.SerializeObject(galaxy, filename);
+            }
         }
 
         private string savefilediag(string extension)
@@ -260,8 +263,8 @@ namespace HazeronMapper
             sfd.AddExtension = true;
             sfd.DefaultExt = extension;
             string filename = null;
-            DialogResult ofd_result = sfd.ShowDialog();
-            if (ofd_result == DialogResult.OK)
+            DialogResult sfd_result = sfd.ShowDialog();
+            if (sfd_result == DialogResult.OK)
             {
                 filename = sfd.FileName;
             }
@@ -281,15 +284,21 @@ namespace HazeronMapper
         private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string hazscan = Clipboard.GetText();
-            string pastemesage = Readscan.readscan(hazscan, galaxy);
-            if (pastemesage != null)
+            // There has to be "System Survey of " in the clipboard, or else it isn't a scan report.
+            if (hazscan != null && hazscan.Contains("System Survey of "))
             {
-                this.toolStripStatusLabel1.Text = pastemesage;
+                string pastemesage = Readscan.readscan(hazscan, galaxy);
+                if (pastemesage != null)
+                {
+                    this.toolStripStatusLabel1.Text = pastemesage;
+                }
+                else
+                {
+                    this.toolStripStatusLabel1.Text = "Paste failed";
+                }
             }
             else
-            {
-                this.toolStripStatusLabel1.Text = "Paste failed";
-            }
+                this.toolStripStatusLabel1.Text = "Paste invalid";
         }
 
         private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
