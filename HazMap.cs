@@ -250,8 +250,11 @@ namespace HazeronMapper
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string filename = savefilediag(".hzm");           
-            filehandling.SerializeObject(galaxy, filename);
+            string filename = savefilediag(".hzm");
+            if (filename != null)
+            {
+                filehandling.SerializeObject(galaxy, filename);
+            }
         }
 
         private string savefilediag(string extension)
@@ -260,8 +263,8 @@ namespace HazeronMapper
             sfd.AddExtension = true;
             sfd.DefaultExt = extension;
             string filename = null;
-            DialogResult ofd_result = sfd.ShowDialog();
-            if (ofd_result == DialogResult.OK)
+            DialogResult sfd_result = sfd.ShowDialog();
+            if (sfd_result == DialogResult.OK)
             {
                 filename = sfd.FileName;
             }
@@ -278,34 +281,6 @@ namespace HazeronMapper
             }
         }
 
-        private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string hazscan = Clipboard.GetText();
-            string pastemesage = Readscan.readscan(hazscan, galaxy);
-            if (pastemesage != null)
-            {
-                this.toolStripStatusLabel1.Text = pastemesage;
-            }
-            else
-            {
-                this.toolStripStatusLabel1.Text = "Paste failed";
-            }
-        }
-
-        private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string filename = openfilediag(".txt");
-            string scanfile = filename;
-            try
-            {
-                string scantext = File.ReadAllText(scanfile);
-                Readscan.readscan(scantext, galaxy);
-            }
-            catch (IOException)
-            {
-            }
-        }
-
         private string openfilediag(string extension)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -318,6 +293,50 @@ namespace HazeronMapper
                 filename = ofd.FileName;
             }
             return filename;
+        }
+
+        private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string hazscan = Clipboard.GetText();
+            // There has to be "System Survey of " in the clipboard, or else it isn't a scan report.
+            if (hazscan != null && hazscan.Contains("System Survey of "))
+            {
+                string pastemesage = Readscan.readscan(hazscan, galaxy);
+                if (pastemesage != null)
+                {
+                    this.toolStripStatusLabel1.Text = pastemesage;
+                }
+                else
+                {
+                    this.toolStripStatusLabel1.Text = "Paste failed";
+                }
+            }
+            else
+            {
+                this.toolStripStatusLabel1.Text = "Paste invalid";
+            }
+        }
+
+        private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string filename = openfilediag(".txt");
+            string scanfile = filename;
+            try
+            {
+                string scantext = File.ReadAllText(scanfile);
+                if (scantext.Contains("System Survey of "))
+                {
+                    Readscan.readscan(scantext, galaxy);
+                }
+                else
+                {
+                    this.toolStripStatusLabel1.Text = "Text file invalid";
+                }
+            }
+            catch (IOException)
+            {
+                this.toolStripStatusLabel1.Text = "Text file read error";
+            }
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
