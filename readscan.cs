@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace HazeronMapper
 {
@@ -41,90 +40,90 @@ namespace HazeronMapper
             //{
                 //string line;
                 //while ((line = reader.ReadLine()) != null)
-            List<string> lines = new List<string>(Regex.Split(scanfile, "\r\n|\r|\n"));
+            List<string> lines = new List<string>(scanfile.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
             foreach (string line in lines)
             {
                 linecount++;
-                if (line != "")
+                if (!readingWH)
                 {
-                    if (!readingWH)
+                    if (line.Contains("Wormholes"))
                     {
-                        if (line.Contains("Wormholes"))
-                        {
-                            readingWH = true;
-                        }
+                        readingWH = true;
+                    }
 
-                        else if (line.Contains("Sector ("))
-                        {
-                            sectorName = line;
-                            int index = line.IndexOf("(");
-                            sectorLoc = line.Substring(index);
-                        }
-                        else if (line.Contains("System") && (!line.Contains("System Survey of ")) && (line.Contains("("))) 
-                        {
-                                
-                            int index = line.IndexOf("(");
-                            systemName = line.Remove(index);
-                            systemLoc = line.Substring(index);
-                        }
-                    }
-                    else
+                    else if (line.Contains("Sector ("))
                     {
-                        whlinecount++;
-                        if (sector == null)
-                        {
-                            sector = new SectorObj(sectorLoc, sectorName, galaxy);
-                            sectorscount++;
-                            sys = new SystemObj(systemLoc, systemName, galaxy.sectors_dictionary[sectorLoc]);
-                            systemscount++;
-                            returnstring = "Added System " + systemName;
-                        }
-                        if (whlinecount == 1)
-                        {
-                            whname = line;
-                        }
-                        else if (line.Contains("Positive Wormhole"))
-                        {
-                            whpolarity = true;
-                        }
-                        else if (line.Contains("Negative Wormhole"))
-                        {
-                            whpolarity = false;
-                        }
-                        else if (whlinecount == 3)
-                        {
-                            int index = line.IndexOf("(");
-                            linkstosystemName = line.Remove(index);
-                            linktosystemLoc = line.Substring(index);
-                        }
-                        else if (whlinecount == 4)
-                        {
-                            linkstosectorName = line;
-                            int index = line.IndexOf("(");
-                            linktosectorLoc = line.Substring(index);
-                        }
-                        else if (whlinecount == 5)
-                        {
-                            WormHoleObj wh = new WormHoleObj(whname, whpolarity, galaxy.sectors_dictionary[sectorLoc].systems_dictionary[sys.location], galaxy);
-                            //WormHoleObj wh = new WormHoleObj(whname, whpolarity, sys, galaxy);
-                            SectorObj whlinksec = new SectorObj(linktosectorLoc, linkstosectorName, galaxy);
-                            sectorscount++;
-                            SystemObj whlinksys = new SystemObj(linktosystemLoc, linkstosystemName, galaxy.sectors_dictionary[linktosectorLoc]);
-                            systemscount++;
-                            wh.makelink(galaxy.sectors_dictionary[linktosectorLoc].systems_dictionary[whlinksys.location]);
-                            whlinecount = 0;
-                            whcount++;
-                        }
+                        sectorName = line;
+                        int index = line.IndexOf("(");
+                        sectorLoc = line.Substring(index);
                     }
-                    if (line == "Primary")
+                    else if (line.Contains("System ("))
                     {
-                        break;
+                        int index = line.IndexOf("(");
+                        systemName = line.Remove(index - 7);
+                        systemLoc = line.Substring(index);
+                    }
+                    else if (line.Contains("'") && line.Contains("(")) // Same as above but in case of missing system word. See: http://hazeron.com/phpBB3/viewtopic.php?f=6&t=6568
+                    {
+                        int index = line.IndexOf("(");
+                        systemName = line.Remove(index - 1);
+                        systemLoc = line.Substring(index);
                     }
                 }
+                else
+                {
+                    whlinecount++;
+                    if (sector == null)
+                    {
+                        sector = new SectorObj(sectorLoc, sectorName, galaxy);
+                        sectorscount++;
+                        sys = new SystemObj(systemLoc, systemName, galaxy.sectors_dictionary[sectorLoc]);
+                        systemscount++;
+                        returnstring = "Added " + systemName;
+                    }
+                    if (whlinecount == 1)
+                    {
+                        whname = line;
+                    }
+                    else if (line.Contains("Positive Wormhole"))
+                    {
+                        whpolarity = true;
+                    }
+                    else if (line.Contains("Negative Wormhole"))
+                    {
+                        whpolarity = false;
+                    }
+                    else if (whlinecount == 3)
+                    {
+                        int index = line.IndexOf("(");
+                        linkstosystemName = line.Remove(index);
+                        linktosystemLoc = line.Substring(index);
+                    }
+                    else if (whlinecount == 4)
+                    {
+                        linkstosectorName = line;
+                        int index = line.IndexOf("(");
+                        linktosectorLoc = line.Substring(index);
+                    }
+                    else if (whlinecount == 5)
+                    {
+                        WormHoleObj wh = new WormHoleObj(whname, whpolarity, galaxy.sectors_dictionary[sectorLoc].systems_dictionary[sys.location], galaxy);
+                        //WormHoleObj wh = new WormHoleObj(whname, whpolarity, sys, galaxy);
+                        SectorObj whlinksec = new SectorObj(linktosectorLoc, linkstosectorName, galaxy);
+                        sectorscount++;
+                        SystemObj whlinksys = new SystemObj(linktosystemLoc, linkstosystemName, galaxy.sectors_dictionary[linktosectorLoc]);
+                        systemscount++;
+                        wh.makelink(galaxy.sectors_dictionary[linktosectorLoc].systems_dictionary[whlinksys.location]);
+                        whlinecount = 0;
+                        whcount++;
+                    }
+                }
+                if (line == "Primary")
+                {
+                    break;
+                }
             }
-
             return returnstring;
-            
         }
     }
 }

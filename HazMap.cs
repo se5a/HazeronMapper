@@ -281,22 +281,15 @@ namespace HazeronMapper
         private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string hazscan = Clipboard.GetText();
-            // There has to be "System Survey of " in the clipboard, or else it isn't a scan report.
-            // hazscan.Contains("System (") is just added to prevent known a bug from crashing the program. See: http://hazeron.com/phpBB3/viewtopic.php?f=6&t=6568
-            if (hazscan != null && hazscan.Contains("System Survey of ") && hazscan.Contains("System ("))
+            string pastemesage = Readscan.readscan(hazscan, galaxy);
+            if (pastemesage != null)
             {
-                string pastemesage = Readscan.readscan(hazscan, galaxy);
-                if (pastemesage != null)
-                {
-                    this.toolStripStatusLabel1.Text = pastemesage;
-                }
-                else
-                {
-                    this.toolStripStatusLabel1.Text = "Paste failed";
-                }
+                this.toolStripStatusLabel1.Text = pastemesage;
             }
             else
-                this.toolStripStatusLabel1.Text = "Paste invalid";
+            {
+                this.toolStripStatusLabel1.Text = "Paste failed";
+            }
         }
 
         private void textFileToolStripMenuItem_Click(object sender, EventArgs e)
