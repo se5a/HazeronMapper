@@ -175,6 +175,10 @@ namespace HazeronMapper
             get { return this.Systems_dictionary; }
         }
 
+        public override string ToString()
+        {
+            return this.SectorName;
+        }
     }
 
     [Serializable]
@@ -256,6 +260,10 @@ namespace HazeronMapper
             set { this.sysMapLoc = value; }
         }
 
+        public override string ToString()
+        {
+            return this.sysName;
+        }
     }
 
     [Serializable]

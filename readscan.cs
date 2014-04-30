@@ -53,21 +53,21 @@ namespace HazeronMapper
 
                     else if (line.Contains("Sector ("))
                     {
-                        sectorName = line;
                         int index = line.IndexOf("(");
-                        sectorLoc = line.Substring(index);
+                        sectorName = line.Trim();
+                        sectorLoc = line.Substring(index).Trim();
                     }
                     else if (line.Contains("System ("))
                     {
                         int index = line.IndexOf("(");
-                        systemName = line.Remove(index - 7);
-                        systemLoc = line.Substring(index);
+                        systemName = line.Remove(index - 7).Trim();
+                        systemLoc = line.Substring(index).Trim();
                     }
                     else if (line.Contains("'") && line.Contains("(")) // Same as above but in case of missing system word. See: http://hazeron.com/phpBB3/viewtopic.php?f=6&t=6568
                     {
                         int index = line.IndexOf("(");
-                        systemName = line.Remove(index - 1);
-                        systemLoc = line.Substring(index);
+                        systemName = line.Remove(index - 1).Trim();
+                        systemLoc = line.Substring(index).Trim();
                     }
                 }
                 else
@@ -96,14 +96,14 @@ namespace HazeronMapper
                     else if (whlinecount == 3)
                     {
                         int index = line.IndexOf("(");
-                        linkstosystemName = line.Remove(index);
-                        linktosystemLoc = line.Substring(index);
+                        linkstosystemName = line.Remove(index).Trim();
+                        linktosystemLoc = line.Substring(index).Trim();
                     }
                     else if (whlinecount == 4)
                     {
-                        linkstosectorName = line;
                         int index = line.IndexOf("(");
-                        linktosectorLoc = line.Substring(index);
+                        linkstosectorName = line.Trim();
+                        linktosectorLoc = line.Substring(index).Trim();
                     }
                     else if (whlinecount == 5)
                     {
