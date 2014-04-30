@@ -107,6 +107,7 @@ namespace HazeronMapper
             refreshlines();        
         }
 
+        #region Draw stars and lines
 
         private void placesystems(SystemObj parentsystem, int angle, int depth, bool resetlocs)
         {                       
@@ -248,6 +249,9 @@ namespace HazeronMapper
             return sides;
         }
 
+        #endregion
+        #region Save and Load
+
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string filename = savefilediag(".hzm");
@@ -295,6 +299,9 @@ namespace HazeronMapper
             return filename;
         }
 
+        #endregion
+        #region Import events
+
         private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string hazscan = Clipboard.GetText();
@@ -338,6 +345,46 @@ namespace HazeronMapper
                 this.toolStripStatusLabel1.Text = "Text file read error";
             }
         }
+
+        private void autoScanHMailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string[] fileList = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Shores of Hazeron\Mail"); // %USERPROFILE%\Shores of Hazeron\Mail
+            if (fileList.Length > 0)
+            {
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Maximum = fileList.Length;
+                toolStripProgressBar1.Visible = true;
+                List<HMailObj> hMailList = new List<HMailObj>();
+                foreach (string file in fileList)
+                {
+                    HMailObj tempMail = new HMailObj(file);
+                    if (HMail.IsShipReport(tempMail) && tempMail.Body.Contains("System Survey of "))
+                    {
+                        hMailList.Add(tempMail);
+                    }
+                    toolStripProgressBar1.Increment(1);
+                }
+                toolStripProgressBar1.Visible = false;
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Maximum = hMailList.Count;
+                toolStripProgressBar1.Visible = true;
+                foreach (HMailObj hMail in hMailList)
+                {
+                    Readscan.readscan(Helper.CleanText(hMail.Body), galaxy);
+                    toolStripProgressBar1.Increment(1);
+                }
+                if (hMailList.Count > 0)
+                    this.toolStripStatusLabel1.Text = hMailList.Count + " systems added.";
+                else
+                    this.toolStripStatusLabel1.Text = "No system scan mails were found.";
+                toolStripProgressBar1.Visible = false;
+            }
+            else
+                this.toolStripStatusLabel1.Text = "No Hazeron mails were found at the default location."; // If this becomes an issue, an user configurable path to the "%USERPROFILE%\Shores of Hazeron\Mail" may be needed.
+        }
+
+        #endregion
+        #region Moving the stars and so
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -388,7 +435,9 @@ namespace HazeronMapper
             canvasloc.Y -= offsety;
             canvasupdate();
             pictureBox1.Invalidate();
-        } 
+        }
+
+        #endregion
     }
 
     public class selectsys_returnObj
