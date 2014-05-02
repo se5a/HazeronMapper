@@ -52,7 +52,7 @@
             this.dataGridView_systems.MultiSelect = false;
             this.dataGridView_systems.Name = "dataGridView_systems";
             this.dataGridView_systems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView_systems.Size = new System.Drawing.Size(314, 241);
+            this.dataGridView_systems.Size = new System.Drawing.Size(410, 277);
             this.dataGridView_systems.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -73,13 +73,13 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(320, 285);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(416, 321);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // button_ok
             // 
             this.button_ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_ok.Location = new System.Drawing.Point(3, 254);
+            this.button_ok.Location = new System.Drawing.Point(3, 290);
             this.button_ok.Name = "button_ok";
             this.button_ok.Size = new System.Drawing.Size(74, 23);
             this.button_ok.TabIndex = 1;
@@ -90,7 +90,7 @@
             // numericUpDown_depth
             // 
             this.numericUpDown_depth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown_depth.Location = new System.Drawing.Point(186, 255);
+            this.numericUpDown_depth.Location = new System.Drawing.Point(282, 291);
             this.numericUpDown_depth.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.numericUpDown_depth.Name = "numericUpDown_depth";
             this.numericUpDown_depth.Size = new System.Drawing.Size(50, 20);
@@ -105,7 +105,7 @@
             // 
             this.label_depth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_depth.AutoSize = true;
-            this.label_depth.Location = new System.Drawing.Point(144, 259);
+            this.label_depth.Location = new System.Drawing.Point(240, 295);
             this.label_depth.Margin = new System.Windows.Forms.Padding(3, 12, 0, 0);
             this.label_depth.Name = "label_depth";
             this.label_depth.Size = new System.Drawing.Size(39, 13);
@@ -114,12 +114,12 @@
             // 
             // checkBox_resetloc
             // 
-            this.checkBox_resetloc.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox_resetloc.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBox_resetloc.AutoSize = true;
             this.checkBox_resetloc.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox_resetloc.Location = new System.Drawing.Point(242, 250);
+            this.checkBox_resetloc.Location = new System.Drawing.Point(338, 286);
             this.checkBox_resetloc.Name = "checkBox_resetloc";
             this.checkBox_resetloc.Size = new System.Drawing.Size(75, 32);
             this.checkBox_resetloc.TabIndex = 5;
@@ -131,7 +131,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(320, 285);
+            this.ClientSize = new System.Drawing.Size(416, 321);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "selectSystemPrompt";
             this.Text = "Select System";

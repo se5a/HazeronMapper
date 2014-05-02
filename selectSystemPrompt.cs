@@ -25,8 +25,15 @@ namespace HazeronMapper
 
             dataGridView_systems.DataSource = syslist;   
 
+            dataGridView_systems.RowHeadersVisible = false;
+            dataGridView_systems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+            dataGridView_systems.Columns["name"].HeaderText = "Name";
             dataGridView_systems.Columns["name"].DisplayIndex = 0;
+            dataGridView_systems.Columns["location"].HeaderText = "Coordinates";
             dataGridView_systems.Columns["location"].DisplayIndex = 1;
+            dataGridView_systems.Columns["sector"].HeaderText = "Sector";
+            dataGridView_systems.Columns["notes"].HeaderText = "Notes";
             dataGridView_systems.Columns["maploc"].Visible = false;
             dataGridView_systems.Refresh();
             this.ShowDialog();
