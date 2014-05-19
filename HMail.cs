@@ -6,7 +6,6 @@ using System.IO;
 
 namespace HazeronMapper
 {
-    #region HMail class
     static class HMail
     {
         static public byte[] Read(string filePath)
@@ -16,11 +15,13 @@ namespace HazeronMapper
 
         static public bool IsCityReport(int messageType) // Give true if MessageType is a City Report (or related) mail.
         {
-            if (messageType == 0x01 // MSG_CityStatusReport
-                   || messageType == 0x04 // MSG_CityDistressReport
-                   || messageType == 0x06 // MSG_CityStatusReportInfo
-                   || messageType == 0x17 // MSG_CityFinalDecayReport
-                   )
+            if (   messageType == 0x01 // MSG_CityStatusReport
+                || messageType == 0x03 // MSG_CityOccupationReport
+                || messageType == 0x04 // MSG_CityDistressReport
+                || messageType == 0x05 // MSG_CityIntelligenceReport
+                || messageType == 0x06 // MSG_CityStatusReportInfo
+                || messageType == 0x17 // MSG_CityFinalDecayReport
+                )
                 return true;
             return false;
         }
@@ -30,7 +31,7 @@ namespace HazeronMapper
         }
         static public bool IsCityReport(byte[] mailBytes) // Same as above but mailBytes input.
         {
-            return IsCityReport(mailBytes[19 + Helper.ToInt32(mailBytes, 15) + 9]);
+            return IsCityReport(mailBytes[19 + HHelper.ToInt32(mailBytes, 15) + 9]);
         }
         static public bool IsCityReport(string filePath) // Same as above but filePath input.
         {
@@ -39,7 +40,7 @@ namespace HazeronMapper
 
         static public bool IsShipLog(int messageType) // Give true if MessageType is a Ship Log (or related) mail.
         {
-            if (messageType == 0x0A // MSG_ShipLog
+            if (   messageType == 0x0A // MSG_ShipLog
                 || messageType == 0x10 // MSG_ShipLogAlert
                 || messageType == 0x11 // MSG_ShipLogDistress
                 || messageType == 0x12 // MSG_ShipLogFinal
@@ -53,7 +54,7 @@ namespace HazeronMapper
         }
         static public bool IsShipLog(byte[] mailBytes) // Same as above but mailBytes input.
         {
-            return IsShipLog(mailBytes[19 + Helper.ToInt32(mailBytes, 15) + 9]);
+            return IsShipLog(mailBytes[19 + HHelper.ToInt32(mailBytes, 15) + 9]);
         }
         static public bool IsShipLog(string filePath) // Same as above but filePath input.
         {
@@ -62,7 +63,7 @@ namespace HazeronMapper
 
         static public bool IsGovernmentMessage(int messageType) // Give true if MessageType is a Government (or related) mail.
         {
-            if (messageType == 0x13 // MSG_Government
+            if (   messageType == 0x13 // MSG_Government
                 || messageType == 0x18 // MSG_DiplomaticMessage
                 )
                 return true;
@@ -74,16 +75,38 @@ namespace HazeronMapper
         }
         static public bool IsGovernmentMessage(byte[] mailBytes) // Same as above but mailBytes input.
         {
-            return IsGovernmentMessage(mailBytes[19 + Helper.ToInt32(mailBytes, 15) + 9]);
+            return IsGovernmentMessage(mailBytes[19 + HHelper.ToInt32(mailBytes, 15) + 9]);
         }
         static public bool IsGovernmentMessage(string filePath) // Same as above but filePath input.
         {
             return IsGovernmentMessage(HMail.Read(filePath));
         }
 
+        static public bool IsOfficerTenFour(int messageType) // Give true if MessageType is a OfficerUpdate (or related) mail.
+        {
+            if (   messageType == 0x0C // MSG_OfficerReady
+                || messageType == 0x14 // MSG_OfficerContact
+                || messageType == 0x16 // MSG_OfficerDeath
+                )
+                return true;
+            return false;
+        }
+        static public bool IsOfficerTenFour(HMailObj mail) // Same as above but mail input.
+        {
+            return IsOfficerTenFour(mail.MessageType);
+        }
+        static public bool IsOfficerTenFour(byte[] mailBytes) // Same as above but mailBytes input.
+        {
+            return IsOfficerTenFour(mailBytes[19 + HHelper.ToInt32(mailBytes, 15) + 9]);
+        }
+        static public bool IsOfficerTenFour(string filePath) // Same as above but filePath input.
+        {
+            return IsOfficerTenFour(HMail.Read(filePath));
+        }
+
         static public bool IsShipReport(int messageType) // Give true if MessageType is a ShipReport (or related) mail.
         {
-            if (messageType == 0x15 // MSG_ShipReport
+            if (   messageType == 0x15 // MSG_ShipReport
                 )
                 return true;
             return false;
@@ -94,16 +117,14 @@ namespace HazeronMapper
         }
         static public bool IsShipReport(byte[] mailBytes) // Same as above but mailBytes input.
         {
-            return IsShipReport(mailBytes[19 + Helper.ToInt32(mailBytes, 15) + 9]);
+            return IsShipReport(mailBytes[19 + HHelper.ToInt32(mailBytes, 15) + 9]);
         }
         static public bool IsShipReport(string filePath) // Same as above but filePath input.
         {
             return IsShipReport(HMail.Read(filePath));
         }
     }
-    #endregion
 
-    #region HMailObj class
     class HMailObj
     {
         // Anr's mail header info sheet: http://goo.gl/E0yoYd
@@ -121,11 +142,11 @@ namespace HazeronMapper
 
         public int Date
         {
-            get { return Helper.ToInt32(_mailBytes, 6); }
+            get { return HHelper.ToInt32(_mailBytes, 6); }
         }
         public int Time
         {
-            get { return Helper.ToInt32(_mailBytes, 10); }
+            get { return HHelper.ToInt32(_mailBytes, 10); }
         }
         public DateTime DateTime
         {
@@ -155,15 +176,15 @@ namespace HazeronMapper
         protected int _from_l, _subj_l, _body_l;
         public string From
         {
-            get { return Helper.ToString(_mailBytes, 19, _from_l); }
+            get { return HHelper.ToBigEndianUnicodeString(_mailBytes, 19, _from_l); }
         }
         public string Subject
         {
-            get { return Helper.ToString(_mailBytes, 19 + _from_l + 14, _subj_l); }
+            get { return HHelper.ToBigEndianUnicodeString(_mailBytes, 19 + _from_l + 14, _subj_l); }
         }
         public string Body
         {
-            get { return Helper.ToString(_mailBytes, 19 + _from_l + 14 + _subj_l + 4, _body_l); }
+            get { return HHelper.ToBigEndianUnicodeString(_mailBytes, 19 + _from_l + 14 + _subj_l + 4, _body_l); }
         }
 
         public int MessageType
@@ -175,60 +196,66 @@ namespace HazeronMapper
         {
             _filePath = filePath;
             _mailBytes = HMail.Read(_filePath);
-            _from_l = Helper.ToInt32(_mailBytes, 15);
-            _subj_l = Helper.ToInt32(_mailBytes, 19 + _from_l + 10);
-            _body_l = Helper.ToInt32(_mailBytes, 19 + _from_l + 14 + _subj_l);
+            _from_l = HHelper.ToInt32(_mailBytes, 15);
+            _subj_l = HHelper.ToInt32(_mailBytes, 19 + _from_l + 10);
+            _body_l = HHelper.ToInt32(_mailBytes, 19 + _from_l + 14 + _subj_l);
         }
     }
-    #endregion
-
-    #region Helper class
-    class Helper
+    
+    class HHelper
     {
-        static public string ToHex(byte[] bytes) // http://stackoverflow.com/a/10048895
+        /// <summary>
+        /// Converts a byte array to a Hexadecimal string.
+        /// </summary>
+        /// <param name="singleByte">Byte to be converted.</param>
+        static public string ToHex(byte singleByte) // Based on http://stackoverflow.com/a/10048895
         {
-            char[] c = new char[bytes.Length * 3];
-
-            byte b;
-
-            for (int bx = 0, cx = 0; bx < bytes.Length; ++bx, ++cx)
-            {
-                b = ((byte)(bytes[bx] >> 4));
-                c[cx] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
-
-                b = ((byte)(bytes[bx] & 0x0F));
-                c[++cx] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
-                c[++cx] = '-';
-            }
-
-            return new string(c);
-        }
-        static public string ToHex(byte singleByte) // same as above my modified to only be one byte
-        {
-            char[] c = new char[2];
+            char[] hex = new char[2];
 
             byte b;
 
             b = ((byte)(singleByte >> 4));
-            c[0] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
+            hex[0] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
 
             b = ((byte)(singleByte & 0x0F));
-            c[1] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
+            hex[1] = (char)(b > 9 ? b - 10 + 'A' : b + '0');
 
-            return new string(c);
+            return new string(hex);
+        }
+        /// <summary>
+        /// Converts a byte array to a Hexadecimal string.
+        /// </summary>
+        /// <param name="bytes">Bytes to be converted.</param>
+        static public string ToHex(byte[] bytes)
+        {
+            List<string> hexs = new List<string>();
+            foreach (byte singleByte in bytes)
+                hexs.Add(ToHex(singleByte));
+            return string.Join("-",hexs.ToArray());
         }
 
+        /// <summary>
+        /// Converts four bytes from a byte array to a int32.
+        /// </summary>
+        /// <param name="bytes">Bytes to be converted.</param>
+        /// <param name="startIndex">Index of the starting byte.</param>
         static public int ToInt32(byte[] bytes, int startIndex)
         {
-            byte[] subBytes = Helper.SubArray(bytes, startIndex, 4);
+            byte[] subBytes = HHelper.SubArray(bytes, startIndex, 4);
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(subBytes);
             return BitConverter.ToInt32(subBytes, 0);
         }
 
-        static public string ToString(byte[] bytes, int startIndex, int length)
+        /// <summary>
+        /// Converts a byte array to a string, using BigEndianUnicode.
+        /// </summary>
+        /// <param name="bytes">Bytes to be converted.</param>
+        /// <param name="startIndex">Index of the starting byte.</param>
+        /// <param name="length">Number of bytes to convert.</param>
+        static public string ToBigEndianUnicodeString(byte[] bytes, int startIndex, int length)
         {
-            byte[] subBytes = Helper.SubArray(bytes, startIndex, length);
+            byte[] subBytes = HHelper.SubArray(bytes, startIndex, length);
             //subBytes = Helper.ConcatinateArray(new byte[] { 0xFE, 0xFF }, subBytes);
             //if (BitConverter.IsLittleEndian)
             //    Array.Reverse(subBytes);
@@ -236,6 +263,23 @@ namespace HazeronMapper
             return text;
         }
 
+        /// <summary>
+        /// Returns selected part of a byte array.
+        /// </summary>
+        /// <param name="bytes">Full byte array.</param>
+        /// <param name="startIndex">Index of the starting byte.</param>
+        static public byte[] SubArray(byte[] bytes, int startIndex)
+        {
+            if (startIndex == 0)
+                return bytes;
+            return SubArray(bytes, startIndex, bytes.Length - startIndex);
+        }
+        /// <summary>
+        /// Returns selected part of a byte array.
+        /// </summary>
+        /// <param name="bytes">Full byte array.</param>
+        /// <param name="startIndex">Index of the starting byte.</param>
+        /// <param name="length">Number of bytes to return.</param>
         static public byte[] SubArray(byte[] bytes, int startIndex, int length)
         {
             byte[] rv = new byte[length];
@@ -244,6 +288,10 @@ namespace HazeronMapper
             //return new List<byte>(bytes).GetRange(startIndex, length).ToArray(); // Another ways of doing it.
         }
 
+        /// <summary>
+        /// Combine multiple arrays into one.
+        /// One after the other.
+        /// </summary>
         static public byte[] ConcatinateArray(byte[] array1, byte[] array2)
         {
             byte[] rv = new byte[array1.Length + array2.Length];
@@ -251,6 +299,10 @@ namespace HazeronMapper
             System.Buffer.BlockCopy(array2, 0, rv, array1.Length, array2.Length);
             return rv;
         }
+        /// <summary>
+        /// Combine multiple arrays into one.
+        /// One after the other.
+        /// </summary>
         static public byte[] ConcatinateArray(byte[] array1, byte[] array2, byte[] array3)
         {
             byte[] rv = new byte[array1.Length + array2.Length + array3.Length];
@@ -260,35 +312,44 @@ namespace HazeronMapper
             return rv;
         }
 
+        /// <summary>
+        /// Returns a string that is void of HTML tags.
+        /// Attempts to add newlines where needed.
+        /// </summary>
+        /// <param name="input">HTML string.</param>
         static public string CleanText(string input) // Removes the html code tags.
         {
-            int tagStart, tagEnd;
-            string processed = "";
-            while (input.Contains("<") && input.Contains(">"))
+            if (input.Contains("<") && input.Contains(">"))
             {
-                tagStart = input.IndexOf('<');
-                tagEnd = input.IndexOf('>') - tagStart;
-                processed += input.Remove(tagStart);
-                string tag = input.Substring(tagStart + 1, tagEnd - 1);
-                input = input.Substring(tagStart + tagEnd + 1);
-                switch (tag.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0])
+                int tagStart, tagEnd;
+                string processed = "";
+                while (input.Contains("<") && input.Contains(">"))
                 {
-                    case "br":
-                    case "div":
-                    case "/div":
-                    case "/td":
-                    case "/tr":
-                        processed += Environment.NewLine;
-                        break;
-                    //case "b":
-                    //case "/b":
-                    //case "td":
-                    //case "tr":
-                    //    break;
+                    tagStart = input.IndexOf('<');
+                    tagEnd = input.IndexOf('>') - tagStart;
+                    processed += input.Remove(tagStart);
+                    string tag = input.Substring(tagStart + 1, tagEnd - 1);
+                    input = input.Substring(tagStart + tagEnd + 1);
+                    switch (tag.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0])
+                    {
+                        case "br":
+                        case "div":
+                        case "/div":
+                        case "/td":
+                        case "/tr":
+                            processed += Environment.NewLine;
+                            break;
+                        //case "b":
+                        //case "/b":
+                        //case "td":
+                        //case "tr":
+                        //    break;
+                    }
                 }
+                return processed.Trim().Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine).Replace("&nbsp;", " "); // Trim for good measure and remove triple NewLine.
             }
-            return processed.Trim().Replace(Environment.NewLine + Environment.NewLine + Environment.NewLine, Environment.NewLine).Replace("&nbsp;"," "); // Trim for good measure and remove triple NewLine.
+            else
+                return input.Trim();
         }
     }
-    #endregion
 }
